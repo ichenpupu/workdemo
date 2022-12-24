@@ -39,20 +39,30 @@ public class UserController {
         return userService.removeById(id);
     }
 
+    @PostMapping("/del/batch")
+    public boolean deleteBatch(@RequestBody List<Integer> ids) { // [1,2,3]
+        return userService.removeByIds(ids);
+    }
+
 //    分页查询 - mybatis-plus
     @GetMapping("/page")
     public IPage<Sys_User> findPage(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(defaultValue = "") String username,
+                                        @RequestParam(defaultValue = "") String email,
                                         @RequestParam(defaultValue = "") String address){
         IPage<Sys_User> page = new Page<>(pageNum, pageSize);
         QueryWrapper<Sys_User> queryWrapper = new QueryWrapper<>();
         if (!"".equals(username)){
             queryWrapper.like("username",username);
         }
+        if (!"".equals(email)){
+            queryWrapper.like("email",email);
+        }
         if (!"".equals(address)) {
             queryWrapper.or().like("address", address);
         }
+        queryWrapper.orderByDesc("id");
         return userService.page(page, queryWrapper);
     }
 //    @GetMapping("/page")
