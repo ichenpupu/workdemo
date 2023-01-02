@@ -1,12 +1,14 @@
 package com.example.workdemo.controller;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.workdemo.controller.dto.UserDto;
 import com.example.workdemo.entity.Sys_User;
 import com.example.workdemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +30,24 @@ public class UserController {
     public UserService userService;
 
 
+
     @GetMapping
     public List<Sys_User> findAll(){
         return userService.list();
 //        List <Sys_User> all =  userMapper.findAll();
 //        return all;
     }
+
+    @PostMapping("/login")
+    public boolean login(@RequestBody UserDto userDto) {
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            return false;
+        }
+        return userService.login(userDto);
+    }
+
 
     @PostMapping
     public boolean save(@RequestBody Sys_User sys_user){
