@@ -24,5 +24,6 @@ public class Sys_User {
     private String phone;
     private String address;
     @ApiModelProperty
-    private LocalDateTime create_time;
+    private LocalDateTime createtime;
+    private String avatar;
 }

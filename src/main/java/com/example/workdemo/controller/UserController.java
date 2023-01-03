@@ -8,6 +8,8 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.workdemo.common.Constants;
+import com.example.workdemo.common.Result;
 import com.example.workdemo.controller.dto.UserDto;
 import com.example.workdemo.entity.Sys_User;
 import com.example.workdemo.service.UserService;
@@ -39,34 +41,53 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public boolean login(@RequestBody UserDto userDto) {
+    public Result login(@RequestBody UserDto userDto) {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
-            return false;
+            return Result.error(Constants.CODE_400,"参数错误");
         }
-        return userService.login(userDto);
+        UserDto dto = userService.login(userDto);
+        return Result.success(dto);
     }
 
 
+    @GetMapping("/username/{username}")
+    public Result findOne(@PathVariable String username){
+        QueryWrapper<Sys_User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        return Result.success(userService.getOne(queryWrapper));
+    }
+
+
+    @PostMapping("/register")
+    public Result register(@RequestBody UserDto userDto){
+        String username = userDto.getUsername();
+        String password = userDto.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)) {
+            return Result.error(Constants.CODE_400,"参数错误");
+        }
+        return Result.success(userService.register(userDto));
+    }
+
     @PostMapping
-    public boolean save(@RequestBody Sys_User sys_user){
-        return userService.saveUser(sys_user);
+    public Result save(@RequestBody Sys_User sys_user){
+        return Result.success(userService.saveUser(sys_user));
     }
 
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Integer id){
-        return userService.removeById(id);
+    public Result delete(@PathVariable Integer id){
+        return Result.success(userService.removeById(id));
     }
 
     @PostMapping("/del/batch")
-    public boolean deleteBatch(@RequestBody List<Integer> ids) { // [1,2,3]
-        return userService.removeByIds(ids);
+    public Result deleteBatch(@RequestBody List<Integer> ids) { // [1,2,3]
+        return Result.success(userService.removeByIds(ids));
     }
 
 //    分页查询 - mybatis-plus
     @GetMapping("/page")
-    public IPage<Sys_User> findPage(@RequestParam Integer pageNum,
+    public Result findPage(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                         @RequestParam(defaultValue = "") String username,
                                         @RequestParam(defaultValue = "") String email,
@@ -83,7 +104,7 @@ public class UserController {
             queryWrapper.or().like("address", address);
         }
         queryWrapper.orderByDesc("id");
-        return userService.page(page, queryWrapper);
+        return Result.success(userService.page(page, queryWrapper));
     }
 //    @GetMapping("/page")
 //    public Map<String, Object> findPage(@RequestParam Integer pageNum,
@@ -116,8 +137,8 @@ public class UserController {
         writer.addHeaderAlias("email", "邮箱");
         writer.addHeaderAlias("phone", "电话");
         writer.addHeaderAlias("address", "地址");
-        writer.addHeaderAlias("create_time", "创建时间");
-        writer.addHeaderAlias("avatarUrl", "头像");
+        writer.addHeaderAlias("createtime", "创建时间");
+        writer.addHeaderAlias("avatar", "头像");
 
         // 一次性写出list内的对象到excel，使用默认样式，强制输出标题
         writer.write(list, true);
@@ -139,7 +160,7 @@ public class UserController {
      * @throws Exception
      */
     @PostMapping("/import")
-    public Boolean imp(MultipartFile file) throws Exception {
+    public Result imp(MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
         // 方式1：(推荐) 通过 javabean的方式读取Excel内的对象，但是要求表头必须是英文，跟javabean的属性要对应起来
@@ -160,7 +181,7 @@ public class UserController {
         }
 
         userService.saveBatch(users);
-        return true;
+        return Result.success(true);
     }
 
 }
