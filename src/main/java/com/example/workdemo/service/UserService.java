@@ -9,6 +9,7 @@ import com.example.workdemo.controller.dto.UserDto;
 import com.example.workdemo.entity.Sys_User;
 import com.example.workdemo.exception.ServiceException;
 import com.example.workdemo.mapper.UserMapper;
+import com.example.workdemo.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +30,8 @@ public class UserService extends ServiceImpl<UserMapper, Sys_User> {
         Sys_User one = getUserInfo(userDto);
         if (one != null) {
             BeanUtil.copyProperties(one, userDto, true);
+            String token = TokenUtils.genToken(one.getId().toString(), one.getPassword());
+            userDto.setToken(token);
             return userDto;
         } else {
             throw new ServiceException(Constants.CODE_600, "用户名或密码错误");

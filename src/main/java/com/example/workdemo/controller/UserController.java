@@ -13,6 +13,7 @@ import com.example.workdemo.common.Result;
 import com.example.workdemo.controller.dto.UserDto;
 import com.example.workdemo.entity.Sys_User;
 import com.example.workdemo.service.UserService;
+import com.example.workdemo.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -104,6 +105,9 @@ public class UserController {
             queryWrapper.or().like("address", address);
         }
         queryWrapper.orderByDesc("id");
+        //获取当前用户信息
+        Sys_User currenuser = TokenUtils.getCurrentUser();
+        System.out.println("hhah" + currenuser.getNickname());
         return Result.success(userService.page(page, queryWrapper));
     }
 //    @GetMapping("/page")
