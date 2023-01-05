@@ -19,3 +19,7 @@ mybatis:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+files:
+  upload:
+    path: /Users/cx/Desktop/study/code/java/workdemo/files

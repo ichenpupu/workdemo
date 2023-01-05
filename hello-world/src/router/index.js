@@ -13,6 +13,7 @@ const routes = [
       { path: 'home', name: '首页', component: () => import('../views/Home.vue')},
       { path: 'user', name: '用户管理', component: () => import('../views/User.vue')},
       { path: 'person', name: '个人信息', component: () => import('../views/Person.vue')},
+      {path: 'file', name: '文件管理', component: () => import('../views/File.vue')},
     ]
   },
   {
@@ -30,6 +31,7 @@ const routes = [
     name: 'Register',
     component: () => import('../views/Register.vue')
   },
+
 ]
 
 const router = new VueRouter({
