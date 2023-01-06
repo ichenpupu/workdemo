@@ -32,6 +32,7 @@ export default {
   props: {
     collapseBtnClass: String,
     collapse: Boolean,
+    user: Object,
   },
   computed: {
     currentPathName () {

@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @TableName(value = "sys_user")
@@ -24,6 +24,6 @@ public class Sys_User {
     private String phone;
     private String address;
     @ApiModelProperty
-    private LocalDateTime createtime;
+    private Date createtime;
     private String avatar;
 }
